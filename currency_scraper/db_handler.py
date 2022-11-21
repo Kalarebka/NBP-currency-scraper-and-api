@@ -6,7 +6,6 @@ from pymongo import MongoClient
 from pymongo.database import Database
 
 
-
 class DBHandler:
     def __init__(self) -> None:
         self.client: MongoClient = MongoClient(os.getenv("MONGODB_URL"))
