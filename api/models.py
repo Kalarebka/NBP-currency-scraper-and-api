@@ -1,6 +1,6 @@
-from datetime import date, datetime, time
+from datetime import date
 from enum import Enum
-from typing import Generator, Optional
+from typing import Generator, List
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -23,7 +23,6 @@ class PyObjectId(ObjectId):
         field_schema.update(type="string")
 
 
-
 class BaseCurrency(BaseModel):
     currency_name: str = Field(...)
     code: str = Field(...)
@@ -31,22 +30,27 @@ class BaseCurrency(BaseModel):
 
 
 class CurrencyA(BaseCurrency):
-    # kurs średni
-    pass
+    average_rate: float = Field(...)
 
 
 class CurrencyB(BaseCurrency):
-    # nazwa kraju, kurs średni
-    pass
+    country: str = Field(...)
+    average_rate: float = Field(...)
 
 
 class CurrencyC(BaseCurrency):
-    # kurs kupna, kurs sprzedaży
-    pass
+    ask_rate: float = Field(...)
+    bid_rate: float = Field(...)
+
+
+class TableType(str, Enum):
+    A = "A"
+    B = "B"
+    C = "C"
 
 
 class Table(BaseModel):
-    pass
-    
-
-
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    table_type: TableType = Field(...)
+    date_published: date = Field(...)
+    currency_rates: List[BaseCurrency] = Field(...)
