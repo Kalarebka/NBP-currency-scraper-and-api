@@ -2,12 +2,12 @@ import requests
 
 from bs4 import BeautifulSoup
 
-from db_handler import DBHandler
-from models import CurrencyA, CurrencyB, CurrencyC, Table, TableType
+from scraper.db_handler import DBHandler
+from scraper.models import CurrencyA, CurrencyB, CurrencyC, Table, TableType
 
 
 BASE_URL = "https://www.nbp.pl/kursy/xml/"
-HEADERS = {'User-Agent': 'Mozilla/5.0'}
+HEADERS = {"User-Agent": "Mozilla/5.0"}
 CURRENCY_TYPES = {"A": CurrencyA, "B": CurrencyB, "C": CurrencyC}
 
 db = DBHandler()
@@ -47,7 +47,9 @@ def get_table(url: str, table_type: TableType):
             )
 
         table_data["currency_rates"].append(CURRENCY_TYPES[table_type](**currency_data))
-    db.save_table()
+
+    new_table = Table(**table_data)
+    db.save_table_to_db(new_table)
 
 
 def get_table_filenames():

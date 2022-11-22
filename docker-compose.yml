@@ -29,10 +29,10 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./app/Dockerfile
-    container_name: shop_app
+      dockerfile: ./api/Dockerfile
+    container_name: currency_api
     volumes:
-      - ./app:/code/app
+      - ./api:/code/api
     env_file:
       - .env
     ports:
@@ -48,13 +48,14 @@ services:
     container_name: celery-beat
     build:
       context: .
-      dockerfile: ./scrapers/Dockerfile
-    command: "celery -A currency_scraper beat --loglevel DEBUG -s /tmp/celerybeat-schedule"
+      dockerfile: ./scraper/Dockerfile
+    command: "celery -A scraper.periodical_scraper beat --loglevel DEBUG -s /tmp/celerybeat-schedule"
     environment:
      - BROKER_URL=${REDIS_URL}
+     - MONGODB_DB=${MONGO_DATABASE}
      - MONGODB_URL=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo_db:27017/
     volumes:
-      - ./currency_scraper:/home/celery/currency_scraper
+      - ./scraper:/home/celery/scraper
     depends_on:
       - redis
       - mongo_db
@@ -63,10 +64,10 @@ services:
     container_name: celery-worker
     build:
       context: .
-      dockerfile: ./currency_scraper/Dockerfile
-    command: "celery -A currency_scraper worker --loglevel INFO"
+      dockerfile: ./scraper/Dockerfile
+    command: "celery -A scraper.periodical_scraper worker --loglevel INFO"
     volumes:
-      - ./currency_scraper:/home/celery/currency_scraper
+      - ./scraper:/home/celery/scraper
     env_file:
       - .env
     environment:

@@ -1,28 +1,31 @@
+import os
+
 from typing import Any
 
 from celery import Celery
 from celery.schedules import crontab
 
-from archive_scraping import BASE_URL, get_A_table, get_B_table, get_C_table
+from scraper.archive_scraping import BASE_URL, get_table
+
 
 app = Celery("periodical_scraper")
 
-app.config_from_object("celery_config")
+app.config_from_object("scraper.celery_config")
 
 
 @app.task(name="periodical_scraper.get_A_table_task")
 def get_A_table_task():
-    get_A_table(BASE_URL + "LastA.xml")
+    get_table(BASE_URL + "LastA.xml", "A")
 
 
 @app.task(name="periodical_scraper.get_B_table_task")
 def get_B_table_task():
-    get_B_table(BASE_URL + "LastB.xml")
+    get_table(BASE_URL + "LastB.xml", "B")
 
 
 @app.task(name="periodical_scraper.get_C_table_task")
 def get_C_table_task():
-    get_C_table(BASE_URL + "LastC.xml")
+    get_table(BASE_URL + "LastC.xml", "C")
 
 
 @app.on_after_configure.connect

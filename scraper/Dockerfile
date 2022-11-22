@@ -8,5 +8,4 @@ WORKDIR /home/celery
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY ./currency_scraper ./currency_scraper
-COPY celeryconfig.py .
+COPY ./scraper ./scraper

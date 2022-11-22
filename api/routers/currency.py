@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.db_handler import DBHandler
+from api.db_handler import DBHandler
 
 router = APIRouter(prefix="/currency")
 db = DBHandler()
