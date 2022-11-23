@@ -6,8 +6,6 @@ from bson import ObjectId
 from pydantic import BaseModel, Field
 
 
-
-
 # from mongodb.com; convert bson ObjectIds to strings
 class PyObjectId(ObjectId):
     @classmethod
@@ -28,6 +26,7 @@ class PyObjectId(ObjectId):
 class BaseCurrency(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     table_id: PyObjectId = Field(...)
+    date_published: date = Field(...)
     currency_name: str = Field(...)
     code: str = Field(...)
     multiplier: int = Field(...)
@@ -51,6 +50,7 @@ class TableType(str, Enum):
     A = "A"
     B = "B"
     C = "C"
+
 
 CURRENCY_TYPES = {"A": CurrencyA, "B": CurrencyB, "C": CurrencyC}
 

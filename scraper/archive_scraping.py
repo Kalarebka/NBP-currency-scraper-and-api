@@ -32,7 +32,8 @@ def get_table(url: str, table_type: TableType) -> None:
             "currency_name": currency.find("nazwa_waluty").text,
             "code": currency.find("kod_waluty").text,
             "multiplier": int(currency.find("przelicznik").text),
-            "table_id": table_id
+            "table_id": table_id,
+            "date_published": table_data["date_published"]
         }
         if table_type == TableType.A:
             currency_data["average_rate"] = float(
@@ -54,8 +55,6 @@ def get_table(url: str, table_type: TableType) -> None:
             )
 
         db.save_currency_to_db(currency_data)
-
-    
 
 
 def get_table_filenames():
