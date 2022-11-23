@@ -31,17 +31,17 @@ def get_C_table_task():
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender: Celery, **kwargs: Any) -> None:
     sender.add_periodic_task(
-        crontab(hour="0", minute="1"),
+        crontab(hour=12, minute=30, day_of_week='1-5'),
         get_A_table_task.s(),
         name="get table A on workdays after 12:15",
     )
     sender.add_periodic_task(
-        crontab(hour="0", minute="1"),
+        crontab(hour=4, minute=0, day_of_week='wed'),
         get_B_table_task.s(),
         name="get atble B on Wednesdays after 12:15",
     )
     sender.add_periodic_task(
-        crontab(hour="0", minute="1"),
+        crontab(hour=8, minute=30, day_of_week='1-5'),
         get_C_table_task.s(),
         name="get table C on workdays after 8:15",
     )
