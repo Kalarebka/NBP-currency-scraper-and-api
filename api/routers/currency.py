@@ -1,15 +1,18 @@
 from fastapi import APIRouter
 
 from api.db_handler import DBHandler
+from api.models import BaseCurrency, CURRENCY_TYPES, TableType
 
 router = APIRouter(prefix="/currency")
 db = DBHandler()
 
 
 @router.get("/{table}/{code}")
-async def get_latest_rate():
+async def get_latest_rate(table: TableType, code: str) -> BaseCurrency:
     # return the latest exchange rate of the <code> currency from <table> table
-    pass
+    result: dict = await db.get_latest_currency(table_type=table, code=code)
+    response: BaseCurrency = CURRENCY_TYPES[table](**result)
+    return response
 
 
 @router.get("/{table}/{code}/today")

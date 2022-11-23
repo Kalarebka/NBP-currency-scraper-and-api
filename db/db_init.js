@@ -10,5 +10,6 @@ db.createUser(
 )
 
 db.createCollection("currency_tables")
+db.createCollection("currency_rates")
 
 db.currency_tables.createIndex({"table_type": 1, "date_published": -1})

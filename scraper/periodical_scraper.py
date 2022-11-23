@@ -38,7 +38,7 @@ def setup_periodic_tasks(sender: Celery, **kwargs: Any) -> None:
     sender.add_periodic_task(
         crontab(hour=4, minute=0, day_of_week='wed'),
         get_B_table_task.s(),
-        name="get atble B on Wednesdays after 12:15",
+        name="get table B on Wednesdays after 12:15",
     )
     sender.add_periodic_task(
         crontab(hour=8, minute=30, day_of_week='1-5'),

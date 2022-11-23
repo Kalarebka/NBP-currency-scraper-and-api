@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from api.db_handler import DBHandler
+from api.models import CURRENCY_TYPES, TableType
 
 router = APIRouter(prefix="/table")
 db = DBHandler()
