@@ -9,8 +9,6 @@ db.createUser(
     }
 )
 
-db.createCollection("currency_tables")
-db.createCollection("currency_rates")
+db.createCollection("currency")
 
-db.currency_tables.createIndex({"table_type": 1, "date_published": -1})
-db.currency_rates.createIndex({"table_id": -1, "date_published": -1})
+db.currency_rates.createIndex({"date_published": -1, "code": 1})

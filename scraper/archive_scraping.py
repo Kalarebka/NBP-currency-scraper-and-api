@@ -1,12 +1,19 @@
 import requests
 import os, sys
 
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, os.path.abspath(".."))
 
 from scraper.db_handler import DBHandler
-from scraper.models import TableType
+
+
+class TableType(str, Enum):
+    A = "A"
+    B = "B"
+    C = "C"
 
 
 BASE_URL = "https://www.nbp.pl/kursy/xml/"
@@ -19,21 +26,17 @@ def get_table(url: str, table_type: TableType) -> None:
     xml_data = requests.get(url, headers=HEADERS).text
     soup = BeautifulSoup(xml_data, "xml")
 
-    table_data = {
-        "date_published": soup.find("data_publikacji").text,
-        "table_type": table_type,
-        "currency_rates": [],
-    }
-
-    table_id = db.save_table_to_db(table_data)
+    date_published: datetime = datetime.strptime(
+        soup.find("data_publikacji").text, "%Y-%m-%d"
+    )
 
     for currency in soup.find_all("pozycja"):
         currency_data = {
             "currency_name": currency.find("nazwa_waluty").text,
             "code": currency.find("kod_waluty").text,
             "multiplier": int(currency.find("przelicznik").text),
-            "table_id": table_id,
-            "date_published": table_data["date_published"]
+            "date_published": date_published,
+            "table": table_type,
         }
         if table_type == TableType.A:
             currency_data["average_rate"] = float(

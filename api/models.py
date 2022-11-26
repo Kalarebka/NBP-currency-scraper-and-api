@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from enum import Enum
 from typing import Generator, List, Optional
 
@@ -23,9 +23,16 @@ class PyObjectId(ObjectId):
         field_schema.update(type="string")
 
 
+class TableType(str, Enum):
+    A = "A"
+    B = "B"
+    C = "C"
+
+
 class BaseCurrency(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    table_id: PyObjectId = Field(...)
+    table: TableType = Field(...)
+    date_published: datetime = Field(...)
     currency_name: str = Field(...)
     code: str = Field(...)
     multiplier: int = Field(...)
@@ -45,17 +52,11 @@ class CurrencyC(BaseCurrency):
     bid_rate: float = Field(...)
 
 
-class TableType(str, Enum):
-    A = "A"
-    B = "B"
-    C = "C"
-
-
-CURRENCY_TYPES = {"A": CurrencyA, "B": CurrencyB, "C": CurrencyC}
-
-
-class Table(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    table_type: TableType = Field(...)
-    date_published: date = Field(...)
-    currency_rates: List[BaseCurrency] = Field(...)
+class CurrencyFactory:
+    def create(self, currency_data: dict):
+        if currency_data["table"] == TableType.A:
+            return CurrencyA(**currency_data)
+        elif currency_data["table"] == TableType.B:
+            return CurrencyB(**currency_data)
+        elif currency_data["table"] == TableType.C:
+            return CurrencyC(**currency_data)

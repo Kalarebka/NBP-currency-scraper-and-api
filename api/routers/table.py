@@ -23,15 +23,3 @@ async def get_today_table():
 async def get_table_from_date():
     # return table from that day or None
     pass
-
-
-@router.get("/{table}/last/{count}")
-async def get_last_n_tables():
-    # return last n tables
-    pass
-
-
-@router.get("/{table}/{start_date}/{end_date}")
-async def get_tables_date_range():
-    # return tables from start_date to end_date
-    pass
