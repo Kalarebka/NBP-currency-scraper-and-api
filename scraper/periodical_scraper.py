@@ -3,8 +3,7 @@ from typing import Any
 from celery import Celery
 from celery.schedules import crontab
 
-from scraper.archive_scraping import BASE_URL, get_table
-from scraper.models import TableType
+from scraper.archive_scraping import BASE_URL, get_table, TableType
 
 
 app = Celery("periodical_scraper")
@@ -14,17 +13,17 @@ app.config_from_object("scraper.celery_config")
 
 @app.task(name="periodical_scraper.get_A_table_task")
 def get_A_table_task() -> None:
-    get_table(BASE_URL + "LastA.xml", TableType.A)
+    get_table(f"{BASE_URL}LastA.xml", TableType.A)
 
 
 @app.task(name="periodical_scraper.get_B_table_task")
 def get_B_table_task() -> None:
-    get_table(BASE_URL + "LastB.xml", TableType.B)
+    get_table(f"{BASE_URL}LastB.xml", TableType.B)
 
 
 @app.task(name="periodical_scraper.get_C_table_task")
 def get_C_table_task() -> None:
-    get_table(BASE_URL + "LastC.xml", TableType.C)
+    get_table(f"{BASE_URL}LastC.xml", TableType.C)
 
 
 @app.on_after_configure.connect

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import os, sys
+import os
 
 from datetime import datetime
 from typing import List, Optional
 
 from motor import motor_asyncio
 
-sys.path.insert(0, os.path.abspath(".."))
 
 from api.models import TableType
 
@@ -45,25 +44,31 @@ class DBHandler(metaclass=Singleton):
         self, table_type: TableType, day: datetime
     ) -> Optional[List[dict]]:
         result = await self.currency.find(
-            {"table_type": table_type, "date_published": day}
+            {"table": table_type, "date_published": day}
         ).to_list(length=None)
         return result
 
     async def get_latest_currency(self, table_type: TableType, code: str) -> dict:
-        result = await self.currency.find().sort({"date_published": -1}).limit(1)
+        result = (
+            await self.currency.find({"table": table_type, "code": code}, {"_id": 0})
+            .sort({"date_published": -1})
+            .limit(1)
+        )
         return result
 
     async def get_currency_from_date(
         self, table_type: TableType, code: str, day: datetime
     ) -> Optional[dict]:
-        result = await self.currency.find_one({"code": code, "date_published": day})
+        result = await self.currency.find_one(
+            {"table": table_type, "code": code, "date_published": day}, {"_id": 0}
+        )
         return result
 
     async def get_last_n_currency(
         self, table_type: TableType, code: str, n_results: int
     ) -> List[dict]:
         result = (
-            await self.currency.find({"code": code, "table": table_type})
+            await self.currency.find({"code": code, "table": table_type}, {"_id": 0})
             .sort({"date_published": -1})
             .limit(n_results)
         )
@@ -77,6 +82,7 @@ class DBHandler(metaclass=Singleton):
                 "code": code,
                 "table": table_type,
                 "date_published": {"$lte": to_date, "$gte": from_date},
-            }
+            },
+            {"_id": 0},
         ).to_list(length=None)
         return result

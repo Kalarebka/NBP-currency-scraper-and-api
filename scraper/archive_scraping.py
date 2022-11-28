@@ -2,6 +2,7 @@ import requests
 import os, sys
 
 from datetime import datetime
+from enum import Enum
 
 from bs4 import BeautifulSoup
 

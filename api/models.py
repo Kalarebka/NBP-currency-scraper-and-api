@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Generator, List, Optional
+from typing import Generator, Optional
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -53,7 +53,8 @@ class CurrencyC(BaseCurrency):
 
 
 class CurrencyFactory:
-    def create(self, currency_data: dict):
+    @staticmethod
+    def create(currency_data: dict):
         if currency_data["table"] == TableType.A:
             return CurrencyA(**currency_data)
         elif currency_data["table"] == TableType.B:
