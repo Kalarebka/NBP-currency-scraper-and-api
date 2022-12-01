@@ -27,16 +27,15 @@ class DBHandler(metaclass=Singleton):
         self.currency = self.db["currency"]
 
     async def get_latest_table(self, table_type: TableType) -> List[dict]:
-        latest_record = (
-            await self.currency.find({"table_type": table_type})
-            .sort({"date_published": -1})
-            .limit(1)
+        latest_record = await self.currency.find_one(
+            {"table": table_type}, {"_id": 0}, sort=[("date_published", -1)]
         )
         result = await self.currency.find(
             {
-                "table_type": table_type,
+                "table": table_type,
                 "date_published": latest_record["date_published"],
-            }
+            },
+            {"_id": 0},
         ).to_list(length=None)
         return result
 
@@ -44,15 +43,15 @@ class DBHandler(metaclass=Singleton):
         self, table_type: TableType, day: datetime
     ) -> Optional[List[dict]]:
         result = await self.currency.find(
-            {"table": table_type, "date_published": day}
+            {"table": table_type, "date_published": day}, {"_id": 0}
         ).to_list(length=None)
         return result
 
     async def get_latest_currency(self, table_type: TableType, code: str) -> dict:
-        result = (
-            await self.currency.find({"table": table_type, "code": code}, {"_id": 0})
-            .sort({"date_published": -1})
-            .limit(1)
+        result = await self.currency.find_one(
+            {"table": table_type, "code": code},
+            {"_id": 0},
+            sort=[("date_published", -1)],
         )
         return result
 
@@ -67,10 +66,10 @@ class DBHandler(metaclass=Singleton):
     async def get_last_n_currency(
         self, table_type: TableType, code: str, n_results: int
     ) -> List[dict]:
-        result = (
+        result: List[dict] = (
             await self.currency.find({"code": code, "table": table_type}, {"_id": 0})
-            .sort({"date_published": -1})
-            .limit(n_results)
+            .sort("date_published", -1)
+            .to_list(length=n_results)
         )
         return result
 

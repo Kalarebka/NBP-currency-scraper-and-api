@@ -24,7 +24,8 @@ db = DBHandler()
 
 
 def get_table(url: str, table_type: TableType) -> None:
-    xml_data = requests.get(url, headers=HEADERS).text
+    xml_data = requests.get(url, headers=HEADERS).content
+    xml_data.decode("ISO-8859-2")
     soup = BeautifulSoup(xml_data, "xml")
 
     date_published: datetime = datetime.strptime(

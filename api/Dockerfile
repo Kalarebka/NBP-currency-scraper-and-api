@@ -1,6 +1,10 @@
 FROM python:3.10
 
-WORKDIR /code
+RUN useradd --create-home fastapi
+USER fastapi
+ENV PATH="/home/fastapi/.local/bin:${PATH}"
+
+WORKDIR /home/fastapi
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt

@@ -53,11 +53,8 @@ class CurrencyC(BaseCurrency):
 
 
 class CurrencyFactory:
-    @staticmethod
-    def create(currency_data: dict):
-        if currency_data["table"] == TableType.A:
-            return CurrencyA(**currency_data)
-        elif currency_data["table"] == TableType.B:
-            return CurrencyB(**currency_data)
-        elif currency_data["table"] == TableType.C:
-            return CurrencyC(**currency_data)
+    currency_classes = {"A": CurrencyA, "B": CurrencyB, "C": CurrencyC}
+
+    @classmethod
+    def create(cls, currency_data: dict):
+        return cls.currency_classes[currency_data["table"]](**currency_data)
